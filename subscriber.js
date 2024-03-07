@@ -1,7 +1,7 @@
 const amqp = require('amqplib/callback_api')
 
 // establish connection
-amqp.connect('amqp://0.0.0.0', (err, connection) => {
+amqp.connect('amqp://127.0.0.1', (err, connection) => {
     if (err){
         throw err;
     }
@@ -18,7 +18,8 @@ amqp.connect('amqp://0.0.0.0', (err, connection) => {
         // send data to queue 
         channel.consume(queueName, (mssg) => {
             console.log(`Message from publisher: ${mssg.content.toString()}`)
-            channel.ack(mssg)
+        },{
+            noAck: true,
         })
     })
 })

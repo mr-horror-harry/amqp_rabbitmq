@@ -1,23 +1,31 @@
 const amqp = require('amqplib/callback_api')
 
 // establish connection
-amqp.connect('amqp://0.0.0.0', (err, connection) => {
-    if (err){
+amqp.connect('amqp://127.0.0.1', (err, connection) => {
+    if (err) {
         throw err;
     }
     // creating a channel 
     connection.createChannel((err, channel) => {
-        if (err){
+        if (err) {
             throw err;
         }
         let queueName = "test_queue_1"
-        let mssg = "Hello this is user 2 !"
-        // set properties to queue 
+
+        // get the message from user
+        const prompt = require('prompt-sync')();
+        
         channel.assertQueue(queueName, {
             durable: false
         })
-        // send data to queue 
-        channel.sendToQueue(queueName, Buffer.from(mssg))
+        // set properties to queue 
+        let mssg;
+        while (mssg != 'exit0'){
+            mssg = prompt('Message: ');
+            // send data to queue 
+            channel.sendToQueue(queueName, Buffer.from(mssg))
+        }
+
         setTimeout(() => {
             connection.close()
         }, 1000)
